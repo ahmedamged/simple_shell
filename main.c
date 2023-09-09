@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/wait.h>
+#include "main.h"
 
 #define EXEC_ERROR -1
 #define IS_PART_OF_PIPE 0
@@ -10,19 +6,31 @@
 /**
  * read_command - read commands
  * @command: command to run
+ * @command_args: command args
  * @len: length of command
  *
  * formats commands
  *
  * Return: status of getline
  */
-int read_command(char **command, size_t *len)
+int read_command(char **command_args[], size_t *len)
 {
 	int status;
+	char *line;
 
-	status = getline(command, len, stdin);
-	if ((*command)[strlen(*command) - 1] == '\n')
-		(*command)[strlen(*command) - 1] = '\0';
+	status = getline(&line, len, stdin);
+	if (status != EOF)
+	{
+		if ((line)[strlen(line) - 1] == '\n')
+			(line)[strlen(line) - 1] = '\0';
+
+		get_command_args(line, command_args);
+	}
+	else
+	{
+		free(line);
+	}
+
 	return (status);
 }
 /**
@@ -36,10 +44,10 @@ int read_command(char **command, size_t *len)
  *
  * Return: void
  */
-void execute_command(char *command, char **argv,
+void execute_command(char **argv,
 					 char *program_name, char **env)
 {
-	if (execve(command, argv, env) == EXEC_ERROR)
+	if (execve(argv[0], argv, env) == EXEC_ERROR)
 	{
 		perror(program_name);
 	}
@@ -57,11 +65,11 @@ void execute_command(char *command, char **argv,
  */
 int handle_pipe(char *program_name, char **env)
 {
-	char *command = NULL, *command_args[] = {NULL};
-	size_t len = 0;
+	char **command_args;
+	size_t len = 0, i;
 	pid_t pid;
 
-	read_command(&command, &len);
+	read_command(&command_args, &len);
 	pid = fork();
 	if (pid == EXEC_ERROR)
 	{
@@ -70,12 +78,20 @@ int handle_pipe(char *program_name, char **env)
 	}
 	if (pid == 0)
 	{
-		execute_command(command, command_args, program_name, env);
+		execute_command(command_args, program_name, env);
 	}
 	else
 	{
 		wait(NULL);
 		printf("#cisfun$ ");
+	}
+	if (command_args != NULL)
+	{
+		for (i = 0; command_args[i] != NULL; i++)
+		{
+			free(command_args[i]);
+		}
+		free(command_args);
 	}
 	return (0);
 }
@@ -93,8 +109,8 @@ int handle_pipe(char *program_name, char **env)
 int main(int argc, char *argv[], char **env)
 {
 	int status;
-	char *command = NULL, *command_args[] = {NULL};
-	size_t len = 0;
+	char **command_args;
+	size_t len = 0, i;
 	pid_t pid;
 
 	(void)argc;
@@ -105,7 +121,7 @@ int main(int argc, char *argv[], char **env)
 	if (isatty(STDIN_FILENO) != IS_PART_OF_PIPE)
 	{
 		printf("#cisfun$ ");
-		status = read_command(&command, &len);
+		status = read_command(&command_args, &len);
 		while (status != EOF)
 		{
 			pid = fork();
@@ -116,18 +132,24 @@ int main(int argc, char *argv[], char **env)
 			}
 			if (pid == 0)
 			{
-				execute_command(command, command_args, argv[0], env);
-				free(command);
+				execute_command(command_args, argv[0], env);
 				return (0);
 			}
 			else
 			{
 				wait(NULL);
 				printf("#cisfun$ ");
-				status = read_command(&command, &len);
+				status = read_command(&command_args, &len);
 			}
 		}
-		free(command);
+		if (command_args != NULL)
+		{
+			for (i = 0; command_args[i] != NULL; i++)
+			{
+				free(command_args[i]);
+			}
+			free(command_args);
+		}
 		printf("\n");
 	}
 	return (0);
