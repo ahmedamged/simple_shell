@@ -5,5 +5,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/wait.h>
-void get_command_args(char *line, char **args[]);
+#include <sys/types.h>
+#include <sys/stat.h>
+void get_command_args(char *line, char ***args);
+char *locate_relative_cmd(char *command);
 #endif

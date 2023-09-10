@@ -5,7 +5,6 @@
 
 /**
  * read_command - read commands
- * @command: command to run
  * @command_args: command args
  * @len: length of command
  *
@@ -13,7 +12,7 @@
  *
  * Return: status of getline
  */
-int read_command(char **command_args[], size_t *len)
+int read_command(char ***command_args, size_t *len)
 {
 	int status;
 	char *line;
@@ -35,7 +34,6 @@ int read_command(char **command_args[], size_t *len)
 }
 /**
  * execute_command - run commands
- * @command: command to run
  * @argv: arguments to command
  * @program_name: name of program
  * @env: environment
