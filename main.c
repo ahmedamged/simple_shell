@@ -1,8 +1,29 @@
 #include "main.h"
 
 #define EXEC_ERROR -1
+#define NOT_FOUND 404
 #define IS_PART_OF_PIPE 0
+#define MAX_LINE_LENGTH 1024
+/**
+ * free_args - memory
+ * @args: pointer to free
+ *
+ * frees memory of args
+ *
+ * Return: void
+ */
+void free_args(char **args[])
+{
+	size_t i;
 
+	for (i = 0; (*args)[i] != NULL; i++)
+	{
+		printf("freeing array elements\n");
+		free((*args)[i]);
+	}
+	printf("freeing big pointer\n");
+	free(*args);
+}
 /**
  * read_command - read commands
  * @command_args: command args
@@ -12,24 +33,22 @@
  *
  * Return: status of getline
  */
-int read_command(char ***command_args, size_t *len)
+int read_command(char ***command_args)
 {
 	int status;
-	char *line;
+	char *line = malloc(sizeof(char) * MAX_LINE_LENGTH);
+	size_t len = MAX_LINE_LENGTH;
 
-	status = getline(&line, len, stdin);
+	status = getline(&line, &len, stdin);
 	if (status != EOF)
 	{
 		if ((line)[strlen(line) - 1] == '\n')
 			(line)[strlen(line) - 1] = '\0';
 
-		get_command_args(line, command_args);
+		status = get_command_args(line, command_args);
 	}
-	else
-	{
-		free(line);
-	}
-
+	printf("status: %d\n", status);
+	free(line);
 	return (status);
 }
 /**
@@ -40,15 +59,34 @@ int read_command(char ***command_args, size_t *len)
  *
  * executes commands
  *
- * Return: void
+ * Return: 0 (Success)
  */
-void execute_command(char **argv,
-					 char *program_name, char **env)
+int execute_command(char **argv[],
+					char *program_name, char **env)
 {
-	if (execve(argv[0], argv, env) == EXEC_ERROR)
+	pid_t pid;
+	pid = fork();
+	if (pid == EXEC_ERROR)
 	{
 		perror(program_name);
+		exit(1);
 	}
+	if (pid == 0)
+	{
+		if (execve((*argv)[0], (*argv), env) == EXEC_ERROR)
+		{
+			free_args(argv);
+			perror(program_name);
+			exit(1);
+		}
+		exit(0);
+	}
+	else
+	{
+		wait(NULL);
+		free_args(argv);
+	}
+	return (0);
 }
 /**
  * handle_pipe - run commands
@@ -64,33 +102,19 @@ void execute_command(char **argv,
 int handle_pipe(char *program_name, char **env)
 {
 	char **command_args;
-	size_t len = 0, i;
-	pid_t pid;
+	size_t i;
 
-	read_command(&command_args, &len);
-	pid = fork();
-	if (pid == EXEC_ERROR)
+	i = read_command(&command_args);
+	if (i == 0)
 	{
-		perror(program_name);
-		return (1);
-	}
-	if (pid == 0)
-	{
-		execute_command(command_args, program_name, env);
+		execute_command(&command_args, program_name, env);
 	}
 	else
 	{
-		wait(NULL);
-		printf("#cisfun$ ");
+		free_args(&command_args);
+		printf("%s: No such file or directory\n", program_name);
 	}
-	if (command_args != NULL)
-	{
-		for (i = 0; command_args[i] != NULL; i++)
-		{
-			free(command_args[i]);
-		}
-		free(command_args);
-	}
+	printf(":) ");
 	return (0);
 }
 /**
@@ -108,9 +132,8 @@ int main(int argc, char *argv[], char **env)
 {
 	int status;
 	char **command_args;
-	size_t len = 0, i;
-	pid_t pid;
 
+	command_args = NULL;
 	(void)argc;
 	if (isatty(STDIN_FILENO) == IS_PART_OF_PIPE)
 	{
@@ -118,35 +141,19 @@ int main(int argc, char *argv[], char **env)
 	}
 	if (isatty(STDIN_FILENO) != IS_PART_OF_PIPE)
 	{
-		printf("#cisfun$ ");
-		status = read_command(&command_args, &len);
+		printf(":) ");
+		status = read_command(&command_args);
 		while (status != EOF)
 		{
-			pid = fork();
-			if (pid == EXEC_ERROR)
-			{
-				perror(argv[0]);
-				return (1);
-			}
-			if (pid == 0)
-			{
-				execute_command(command_args, argv[0], env);
-				return (0);
-			}
+			if (status != NOT_FOUND && status != EOF)
+				execute_command(&command_args, argv[0], env);
 			else
 			{
-				wait(NULL);
-				printf("#cisfun$ ");
-				status = read_command(&command_args, &len);
+				printf("%s: No such file or directory\n", argv[0]);
+				free_args(&command_args);
 			}
-		}
-		if (command_args != NULL)
-		{
-			for (i = 0; command_args[i] != NULL; i++)
-			{
-				free(command_args[i]);
-			}
-			free(command_args);
+			printf(":) ");
+			status = read_command(&command_args);
 		}
 		printf("\n");
 	}

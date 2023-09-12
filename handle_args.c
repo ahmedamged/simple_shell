@@ -1,4 +1,5 @@
 #include "main.h"
+
 /**
  * get_command_args - command format
  * @line: string of command adn args
@@ -6,36 +7,48 @@
  *
  * formats line into command and args
  *
- * Return: void
+ * Return: 0 (Success)
+ * 404 (non found)
  */
-void get_command_args(char *line, char ***args)
+int get_command_args(char *line, char ***args)
 {
-	char *temp = malloc(sizeof(char) * (strlen(line) + 1)), *string_array;
-	size_t i, length = 0;
+	char *temp = malloc(sizeof(char) * (strlen(line) + 1)), *string_array, **temp_array;
+	size_t length = 0, i;
 
 	temp = strcpy(temp, line);
 	string_array = strtok(temp, " ");
-
 	while (string_array != NULL)
 	{
 		length++;
 		string_array = strtok(NULL, " ");
 	}
-
-	free(temp);
-	if (length != 0)
+	temp = strcpy(temp, line);
+	*args = malloc(sizeof(char *) * (length + 1));
+	for (i = 0; i <= length; i++)
 	{
-		*args = malloc(sizeof(char *) * (length + 1));
-		string_array = strtok(line, " ");
-		for (i = 0; string_array != NULL; i++)
-		{
-			(*args)[i] = malloc(sizeof(char) * (strlen(string_array) + 1));
-			(*args)[i] = strcpy((*args)[i], string_array);
-			string_array = strtok(NULL, " ");
-		}
-		(*args)[0] = locate_relative_cmd((*args)[0]);
-		(*args)[length] = NULL;
+		(*args)[i] = NULL;
 	}
+	temp_array = *args;
+	string_array = strtok(temp, " ");
+	while (string_array != NULL)
+	{
+		length = strlen(string_array);
+		*temp_array = malloc(sizeof(char) * (length + 1));
+		*temp_array = strcpy(*temp_array, string_array);
+		*temp_array = strcat(*temp_array, "\0");
+		temp_array++;
+		string_array = strtok(NULL, " ");
+	}
+	free(temp);
+	temp = locate_relative_cmd(**args);
+	if (temp == NULL)
+	{
+		return (404);
+	}
+	free(**args);
+	**args = temp;
+	*temp_array = NULL;
+	return (0);
 }
 /**
  * locate_relative_cmd - parse commands
@@ -48,34 +61,92 @@ void get_command_args(char *line, char ***args)
 char *locate_relative_cmd(char *command)
 {
 	struct stat st;
-	char *paths, *temp_path, *token, *temp_command;
+	path *path_temp = malloc(sizeof(path)), *temp;
+	size_t path_len;
+	char *temp_command;
 
+	path_temp->next = NULL;
+	temp = path_temp;
 	if (stat(command, &st) == 0)
 	{
 		return (command);
 	}
+	free(path_temp);
+	path_temp = _getenv("PATH");
 
-	paths = getenv("PATH");
-	temp_path = malloc(sizeof(char) * strlen(paths));
-	temp_path = strcpy(temp_path, paths);
-	token = strtok(temp_path, ":");
-
-	while (token != NULL)
+	while (path_temp != NULL && path_temp->value != NULL)
 	{
-		temp_command = malloc(sizeof(char) * (strlen(token) + 1));
-		temp_command = strcpy(temp_command, token);
-		if (temp_command[strlen(token) - 1] != '/')
+		path_len = strlen(path_temp->value);
+		temp_command = malloc(sizeof(char) * (path_len + 2 + strlen(command) + 1));
+		temp_command = strcpy(temp_command, path_temp->value);
+		printf("path_len: %ld, temp_command: %s, command: %s\n", path_len, temp_command, command);
+		if (temp_command[path_len - 1] != '/')
 			temp_command = strcat(temp_command, "/");
 		temp_command = strcat(temp_command, command);
-		temp_command[strlen(temp_command)] = '\0';
+		temp_command = strcat(temp_command, "\0");
 		if (stat(temp_command, &st) == 0)
 		{
-			free(temp_path);
+			while (path_temp != NULL)
+			{
+				free(path_temp->value);
+				temp = path_temp;
+				path_temp = path_temp->next;
+				free(temp);
+			}
 			return (temp_command);
 		}
 		free(temp_command);
-		token = strtok(NULL, ":");
+		free(path_temp->value);
+		temp = path_temp;
+		path_temp = path_temp->next;
+		free(temp);
 	}
-	free(temp_path);
-	return (command);
+	free(path_temp->next);
+	free(path_temp->value);
+	free(path_temp);
+	return (NULL);
+}
+
+/**
+ * _getenv - environ
+ * @var: name of variable
+ *
+ * gets array of values
+ *
+ * return: linked list of strings
+ */
+path *_getenv(char *var)
+{
+	char *token, **envs = __environ, *env;
+	path *start = malloc(sizeof(path)), *current;
+	size_t var_len = strlen(var), str_len;
+
+	start->next = NULL;
+	start->value = NULL;
+	current = start;
+	while (*envs != NULL)
+	{
+		if (strncmp(var, *envs, var_len) == 0)
+		{
+			env = malloc(sizeof(char) * (strlen(*envs) + 1));
+			env = strcpy(env, *envs);
+			token = strtok(env + var_len + 1, ":");
+			while (token != NULL)
+			{
+				str_len = strlen(token);
+				current->value = malloc(sizeof(char) * (str_len + 1));
+				strcpy(current->value, token);
+				current->value[str_len] = '\0';
+				current->next = malloc(sizeof(path));
+				current->next->next = NULL;
+				current->next->value = NULL;
+				current = current->next;
+				token = strtok(NULL, ":");
+			}
+			free(env);
+			return (start);
+		}
+		envs++;
+	}
+	return (NULL);
 }
