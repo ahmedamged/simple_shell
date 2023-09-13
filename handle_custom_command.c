@@ -18,6 +18,13 @@ bool handle_custom_command(char *line, char ***args)
 		(*args)[1] = NULL;
 		return (true);
 	}
+	else if (strncmp(line, "env", 3) == 0)
+	{
+		*args = malloc(sizeof(char *) * 2);
+		(*args)[0] = "env";
+		(*args)[1] = NULL;
+		return (true);
+	}
 	return (false);
 }
 /**
@@ -36,5 +43,10 @@ void execute_custom_command(char ***cmd)
 	{
 		free(*cmd);
 		exit(0);
+	}
+	else if (strcmp((*cmd)[0], "env") == 0)
+	{
+		free(*cmd);
+		print_env();
 	}
 }

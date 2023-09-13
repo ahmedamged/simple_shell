@@ -106,7 +106,6 @@ char *locate_relative_cmd(char *command)
 	free(path_temp);
 	return (NULL);
 }
-
 /**
  * _getenv - environ
  * @var: name of variable
@@ -149,4 +148,21 @@ path *_getenv(char *var)
 		envs++;
 	}
 	return (NULL);
+}
+/**
+ * print_env - environ
+ *
+ * prints env
+ *
+ * Return: void
+ */
+void print_env(void)
+{
+	char **envs = __environ;
+
+	while (*envs != NULL)
+	{
+		printf("%s\n", *envs);
+		(*envs)++;
+	}
 }

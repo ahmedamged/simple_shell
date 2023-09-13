@@ -28,4 +28,5 @@ int execute_command(char **argv[],
 bool handle_custom_command(char *line, char ***args);
 void execute_custom_command(char ***cmd);
 void free_args(char **args[]);
+void print_env(void);
 #endif
