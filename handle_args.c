@@ -12,10 +12,16 @@
  */
 int get_command_args(char *line, char ***args)
 {
-	char *temp = malloc(sizeof(char) * (strlen(line) + 1)), *string_array, **temp_array;
+	char *temp = malloc(sizeof(char) * (strlen(line) + 1)), *string_array,
+		 **temp_array;
 	size_t length = 0, i;
 
 	temp = strcpy(temp, line);
+	if (handle_custom_command(line, args))
+	{
+		free(temp);
+		return (0);
+	}
 	string_array = strtok(temp, " ");
 	while (string_array != NULL)
 	{
@@ -61,25 +67,19 @@ int get_command_args(char *line, char ***args)
 char *locate_relative_cmd(char *command)
 {
 	struct stat st;
-	path *path_temp = malloc(sizeof(path)), *temp;
+	path *path_temp, *temp;
 	size_t path_len;
 	char *temp_command;
 
-	path_temp->next = NULL;
-	temp = path_temp;
 	if (stat(command, &st) == 0)
-	{
 		return (command);
-	}
-	free(path_temp);
 	path_temp = _getenv("PATH");
-
+	temp = path_temp;
 	while (path_temp != NULL && path_temp->value != NULL)
 	{
 		path_len = strlen(path_temp->value);
 		temp_command = malloc(sizeof(char) * (path_len + 2 + strlen(command) + 1));
 		temp_command = strcpy(temp_command, path_temp->value);
-		printf("path_len: %ld, temp_command: %s, command: %s\n", path_len, temp_command, command);
 		if (temp_command[path_len - 1] != '/')
 			temp_command = strcat(temp_command, "/");
 		temp_command = strcat(temp_command, command);
@@ -113,7 +113,7 @@ char *locate_relative_cmd(char *command)
  *
  * gets array of values
  *
- * return: linked list of strings
+ * Return: linked list of strings
  */
 path *_getenv(char *var)
 {

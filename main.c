@@ -18,10 +18,8 @@ void free_args(char **args[])
 
 	for (i = 0; (*args)[i] != NULL; i++)
 	{
-		printf("freeing array elements\n");
 		free((*args)[i]);
 	}
-	printf("freeing big pointer\n");
 	free(*args);
 }
 /**
@@ -44,10 +42,8 @@ int read_command(char ***command_args)
 	{
 		if ((line)[strlen(line) - 1] == '\n')
 			(line)[strlen(line) - 1] = '\0';
-
 		status = get_command_args(line, command_args);
 	}
-	printf("status: %d\n", status);
 	free(line);
 	return (status);
 }
@@ -65,6 +61,7 @@ int execute_command(char **argv[],
 					char *program_name, char **env)
 {
 	pid_t pid;
+	execute_custom_command(argv);
 	pid = fork();
 	if (pid == EXEC_ERROR)
 	{
@@ -106,9 +103,7 @@ int handle_pipe(char *program_name, char **env)
 
 	i = read_command(&command_args);
 	if (i == 0)
-	{
 		execute_command(&command_args, program_name, env);
-	}
 	else
 	{
 		free_args(&command_args);
@@ -146,7 +141,9 @@ int main(int argc, char *argv[], char **env)
 		while (status != EOF)
 		{
 			if (status != NOT_FOUND && status != EOF)
+			{
 				execute_command(&command_args, argv[0], env);
+			}
 			else
 			{
 				printf("%s: No such file or directory\n", argv[0]);
