@@ -31,9 +31,7 @@ int get_command_args(char *line, char ***args)
 	temp = strcpy(temp, line);
 	*args = malloc(sizeof(char *) * (length + 1));
 	for (i = 0; i <= length; i++)
-	{
 		(*args)[i] = NULL;
-	}
 	temp_array = *args;
 	string_array = strtok(temp, " ");
 	while (string_array != NULL)
@@ -48,9 +46,7 @@ int get_command_args(char *line, char ***args)
 	free(temp);
 	temp = locate_relative_cmd(**args);
 	if (temp == NULL)
-	{
 		return (404);
-	}
 	free(**args);
 	**args = temp;
 	*temp_array = NULL;
@@ -148,21 +144,4 @@ path *_getenv(char *var)
 		envs++;
 	}
 	return (NULL);
-}
-/**
- * print_env - environ
- *
- * prints env
- *
- * Return: void
- */
-void print_env(void)
-{
-	char **envs = __environ;
-
-	while (*envs != NULL)
-	{
-		printf("%s\n", *envs);
-		(*envs)++;
-	}
 }

@@ -25,7 +25,6 @@ void free_args(char **args[])
 /**
  * read_command - read commands
  * @command_args: command args
- * @len: length of command
  *
  * formats commands
  *
@@ -34,10 +33,12 @@ void free_args(char **args[])
 int read_command(char ***command_args)
 {
 	int status;
-	char *line = malloc(sizeof(char) * MAX_LINE_LENGTH);
-	size_t len = MAX_LINE_LENGTH;
+	char *line = malloc(sizeof(char) * MAX_LINE_LENGTH) /* , *test = malloc(sizeof(char) * MAX_LINE_LENGTH) */;
+	size_t len = MAX_LINE_LENGTH /* , test_len = MAX_LINE_LENGTH */;
 
-	status = getline(&line, &len, stdin);
+	/* _getline(&test, &test_len, stdin);
+	printf("result of _getine: %s\n", test); */
+	status = _getline(&line, &len, stdin);
 	if (status != EOF)
 	{
 		if ((line)[strlen(line) - 1] == '\n')
@@ -61,27 +62,30 @@ int execute_command(char **argv[],
 					char *program_name, char **env)
 {
 	pid_t pid;
-	execute_custom_command(argv);
-	pid = fork();
-	if (pid == EXEC_ERROR)
+
+	if (!execute_custom_command(argv))
 	{
-		perror(program_name);
-		exit(1);
-	}
-	if (pid == 0)
-	{
-		if (execve((*argv)[0], (*argv), env) == EXEC_ERROR)
+		pid = fork();
+		if (pid == EXEC_ERROR)
 		{
-			free_args(argv);
 			perror(program_name);
 			exit(1);
 		}
-		exit(0);
-	}
-	else
-	{
-		wait(NULL);
-		free_args(argv);
+		if (pid == 0)
+		{
+			if (execve((*argv)[0], (*argv), env) == EXEC_ERROR)
+			{
+				free_args(argv);
+				perror(program_name);
+				exit(1);
+			}
+			exit(0);
+		}
+		else
+		{
+			wait(NULL);
+			free_args(argv);
+		}
 	}
 	return (0);
 }
