@@ -76,7 +76,7 @@ int execute_command(char **path, char **argv[],
 		}
 		if (pid == 0)
 		{
-			if (execve(*path, (*argv), env) == EXEC_ERROR)
+			if (execve((*argv)[0], (*argv), env) == EXEC_ERROR)
 			{
 				free(*path);
 				free_args(argv);
