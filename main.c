@@ -46,6 +46,7 @@ int execute_command(char **path, char **argv[],
 					char *program_name, char **env)
 {
 	pid_t pid;
+	int child_status, exit_status;
 
 	if (!execute_custom_command(path, argv, program_name))
 	{
@@ -68,12 +69,13 @@ int execute_command(char **path, char **argv[],
 		}
 		else
 		{
-			wait(NULL);
+			wait(&child_status);
+			exit_status = WEXITSTATUS(child_status);
 			free(*path);
 			free_args(argv);
 		}
 	}
-	return (0);
+	return (exit_status);
 }
 /**
  * handle_pipe - run commands
@@ -91,13 +93,12 @@ int handle_pipe(char *program_name, char **env)
 	char **command_args = NULL, *path = NULL,
 		 *line = safe_malloc(sizeof(char) * MAX_LINE_LENGTH), *one_line,
 		 *temp, **save_ptr = safe_malloc(sizeof(char) * MAX_LINE_LENGTH);
-	int i;
+	int i, status;
 	ssize_t len = MAX_LINE_LENGTH;
 
 	i = _getline(&line, &len, stdin);
 	if (!is_empty(line))
 	{
-
 		if (i == EOF)
 		{
 			perror(program_name);
@@ -111,7 +112,11 @@ int handle_pipe(char *program_name, char **env)
 			temp = strcpy(temp, one_line);
 			i = get_command_args(temp, &command_args, &path);
 			if (i != NOT_FOUND && i != EOF)
-				execute_command(&path, &command_args, program_name, env);
+			{
+				status = execute_command(&path, &command_args, program_name, env);
+				if (status != EXIT_SUCCESS)
+					break;
+			}
 			else
 			{
 				perror(program_name);
@@ -124,7 +129,7 @@ int handle_pipe(char *program_name, char **env)
 	}
 	free(save_ptr);
 	free(line);
-	return (0);
+	return (status);
 }
 /**
  * main - simple shell
