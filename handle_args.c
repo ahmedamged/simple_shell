@@ -99,6 +99,7 @@ char *locate_relative_cmd(char *command)
 		path_temp = path_temp->next;
 		free(temp);
 	}
+	free(command);
 	free(path_temp->next);
 	free(path_temp->value);
 	free(path_temp);
