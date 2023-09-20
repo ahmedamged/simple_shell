@@ -38,13 +38,14 @@ int read_command(char **path, char ***command_args)
 	ssize_t len = MAX_LINE_LENGTH;
 
 	status = _getline(&line, &len, stdin);
-	if (strlen(line) == 1 && line[0] == '\n')
+
+	if (status != EOF)
 	{
-		free(line);
-		return (IS_NEW_LINE);
-	}
-	else if (status != EOF)
-	{
+		if (strlen(line) == 1 && line[0] == '\n')
+		{
+			free(line);
+			return (IS_NEW_LINE);
+		}
 		if ((line)[strlen(line) - 1] == '\n')
 			(line)[strlen(line) - 1] = '\0';
 		status = get_command_args(line, command_args, path);
