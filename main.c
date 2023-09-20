@@ -27,13 +27,14 @@ void free_args(char **args[])
 }
 /**
  * read_command - read commands
+ * @path: fath for command
  * @command_args: command args
  *
  * formats commands
  *
  * Return: status of getline
  */
-int read_command(char ***command_args)
+int read_command(char **path, char ***command_args)
 {
 	int status;
 	char *line = malloc(sizeof(char) * MAX_LINE_LENGTH);
@@ -44,13 +45,14 @@ int read_command(char ***command_args)
 	{
 		if ((line)[strlen(line) - 1] == '\n')
 			(line)[strlen(line) - 1] = '\0';
-		status = get_command_args(line, command_args);
+		status = get_command_args(line, command_args, path);
 	}
 	free(line);
 	return (status);
 }
 /**
  * execute_command - run commands
+ * @path: arguments to command
  * @argv: arguments to command
  * @program_name: name of program
  * @env: environment
@@ -59,7 +61,7 @@ int read_command(char ***command_args)
  *
  * Return: 0 (Success)
  */
-int execute_command(char **argv[],
+int execute_command(char **path, char **argv[],
 					char *program_name, char **env)
 {
 	pid_t pid;
@@ -74,8 +76,9 @@ int execute_command(char **argv[],
 		}
 		if (pid == 0)
 		{
-			if (execve((*argv)[0], (*argv), env) == EXEC_ERROR)
+			if (execve(*path, (*argv), env) == EXEC_ERROR)
 			{
+				free(*path);
 				free_args(argv);
 				perror(program_name);
 				exit(1);
@@ -103,12 +106,12 @@ int execute_command(char **argv[],
  */
 int handle_pipe(char *program_name, char **env)
 {
-	char **command_args = NULL;
+	char **command_args = NULL, *path = NULL;
 	size_t i;
 
-	i = read_command(&command_args);
+	i = read_command(&path, &command_args);
 	if (i == 0)
-		execute_command(&command_args, program_name, env);
+		execute_command(&path, &command_args, program_name, env);
 	else
 	{
 		free_args(&command_args);
@@ -130,9 +133,8 @@ int handle_pipe(char *program_name, char **env)
 int main(int argc, char *argv[], char **env)
 {
 	int status;
-	char **command_args;
+	char **command_args = NULL, *path = NULL;
 
-	command_args = NULL;
 	(void)argc;
 	if (isatty(STDIN_FILENO) == IS_PART_OF_PIPE)
 	{
@@ -141,12 +143,12 @@ int main(int argc, char *argv[], char **env)
 	if (isatty(STDIN_FILENO) != IS_PART_OF_PIPE)
 	{
 		printf("($) ");
-		status = read_command(&command_args);
+		status = read_command(&path, &command_args);
 		while (status != EOF)
 		{
 			if (status != NOT_FOUND && status != EOF)
 			{
-				execute_command(&command_args, argv[0], env);
+				execute_command(&path, &command_args, argv[0], env);
 			}
 			else
 			{
@@ -154,7 +156,7 @@ int main(int argc, char *argv[], char **env)
 				free_args(&command_args);
 			}
 			printf("($) ");
-			status = read_command(&command_args);
+			status = read_command(&path, &command_args);
 		}
 		printf("\n");
 	}

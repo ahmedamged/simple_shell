@@ -4,13 +4,14 @@
  * get_command_args - command format
  * @line: string of command and args
  * @args: args
+ * @path: path
  *
  * formats line into command and args
  *
  * Return: 0 (Success)
  * 404 (non found)
  */
-int get_command_args(char *line, char ***args)
+int get_command_args(char *line, char ***args, char **path)
 {
 	char *temp = malloc(sizeof(char) * (strlen(line) + 1)), *string_array,
 		 **temp_array;
@@ -47,10 +48,7 @@ int get_command_args(char *line, char ***args)
 	temp = locate_relative_cmd(**args);
 	if (temp == NULL)
 		return (404);
-	if (temp == *args[0])
-		return (0);
-	free(*args[0]);
-	*args[0] = temp;
+	*path = temp;
 	return (0);
 }
 /**

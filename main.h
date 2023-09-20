@@ -21,10 +21,10 @@ typedef struct path
 	struct path *next;
 	char *value;
 } path;
-int get_command_args(char *line, char ***args);
+int get_command_args(char *line, char ***args, char **path);
 char *locate_relative_cmd(char *command);
 path *_getenv(char *var);
-int execute_command(char **argv[],
+int execute_command(char **path, char **argv[],
 					char *program_name, char **env);
 bool handle_custom_command(char *line, char ***args);
 bool execute_custom_command(char ***cmd);
