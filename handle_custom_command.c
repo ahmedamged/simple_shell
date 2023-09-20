@@ -50,21 +50,33 @@ bool handle_custom_command(char *line, char ***args)
  * execute_custom_command - command format
  * @cmd: argument of command
  * @path: path of command
+ * @program_name: program_name
  *
  * handles custom argument
  *
  * Return: true if found,
  * false if general
  */
-bool execute_custom_command(char **path, char ***cmd)
+bool execute_custom_command(char **path, char ***cmd, char *program_name)
 {
 	long int exit_status = EXIT_SUCCESS;
+	size_t i;
 
 	if (strcmp((*cmd)[0], "exit") == 0)
 	{
 		if ((*cmd)[1] != NULL)
 		{
 			exit_status = strtol((*cmd)[1], NULL, 10);
+			for (i = 0; (*cmd)[1][i] != '\0'; i++)
+			{
+				if (!isdigit((*cmd)[1][i]))
+				{
+					fprintf(stderr, "%s: 2: exit: Illegal number: %s\n", program_name, (*cmd)[1]);
+					free((*cmd)[1]);
+					free(*cmd);
+					return (true);
+				}
+			}
 			free((*cmd)[1]);
 		}
 		free(*cmd);

@@ -66,7 +66,7 @@ int execute_command(char **path, char **argv[],
 {
 	pid_t pid;
 
-	if (!execute_custom_command(path, argv))
+	if (!execute_custom_command(path, argv, program_name))
 	{
 		pid = fork();
 		if (pid == EXEC_ERROR)
