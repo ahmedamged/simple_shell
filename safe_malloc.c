@@ -19,3 +19,17 @@ void *safe_malloc(size_t size)
 	}
 	return temp;
 }
+/**
+ * free_path
+ */
+void free_path(path **path_temp)
+{
+	path *temp;
+	while (*path_temp != NULL)
+	{
+		free((*path_temp)->value);
+		temp = (*path_temp);
+		(*path_temp) = (*path_temp)->next;
+		free(temp);
+	}
+}

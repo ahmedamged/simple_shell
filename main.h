@@ -35,4 +35,5 @@ void free_args(char **args[]);
 void print_env(void);
 ssize_t _getline(char **lineptr, ssize_t *len, FILE *file);
 void *safe_malloc(size_t size);
+void free_path(path **path_temp);
 #endif

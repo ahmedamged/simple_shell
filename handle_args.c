@@ -83,13 +83,7 @@ char *locate_relative_cmd(char *command)
 		temp_command = strcat(temp_command, "\0");
 		if (stat(temp_command, &st) == 0)
 		{
-			while (path_temp != NULL)
-			{
-				free(path_temp->value);
-				temp = path_temp;
-				path_temp = path_temp->next;
-				free(temp);
-			}
+			free_path(&path_temp);
 			free(command);
 			return (temp_command);
 		}
