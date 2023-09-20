@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <signal.h>
 /**
  * struct path - Typedef for command args
  * @next: pointer for next entity

@@ -71,7 +71,8 @@ bool execute_custom_command(char **path, char ***cmd, char *program_name)
 			{
 				if (!isdigit((*cmd)[1][i]))
 				{
-					fprintf(stderr, "%s: 2: exit: Illegal number: %s\n", program_name, (*cmd)[1]);
+					fprintf(stderr, "%s: 2: exit: Illegal number: %s\n",
+							program_name, (*cmd)[1]);
 					free((*cmd)[1]);
 					free(*cmd);
 					return (true);
@@ -147,7 +148,7 @@ ssize_t _getline(char **lineptr, ssize_t *len, FILE *file)
 		if (read_status < MAX_READ_BUFFER_SIZE && buffer[read_status - 1] == '\n')
 			break;
 		free(temp);
-		}
+	}
 	free(temp);
 	return (temp_len);
 }
