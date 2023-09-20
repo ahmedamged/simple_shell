@@ -136,7 +136,7 @@ int handle_pipe(char *program_name, char **env)
  */
 int main(int argc, char *argv[], char **env)
 {
-	int status;
+	int read_status, write_status;
 	char **command_args = NULL, *path = NULL;
 
 	(void)argc;
@@ -147,15 +147,15 @@ int main(int argc, char *argv[], char **env)
 	}
 	if (isatty(STDIN_FILENO) != IS_PART_OF_PIPE)
 	{
-		printf("($) ");
-		status = read_command(&path, &command_args);
-		while (status != EOF)
+		write(STDOUT_FILENO, "($) ", 4);
+		read_status = read_command(&path, &command_args);
+		while (read_status != EOF)
 		{
-			if (status != IS_NEW_LINE)
+			if (read_status != IS_NEW_LINE)
 			{
-				if (status != NOT_FOUND && status != EOF)
+				if (read_status != NOT_FOUND && read_status != EOF)
 				{
-					execute_command(&path, &command_args, program_name, env);
+					write_status = execute_command(&path, &command_args, program_name, env);
 				}
 				else
 				{
@@ -163,10 +163,10 @@ int main(int argc, char *argv[], char **env)
 					free_args(&command_args);
 				}
 			}
-			printf("($) ");
-			status = read_command(&path, &command_args);
+			write(STDOUT_FILENO, "($) ", 4);
+			read_status = read_command(&path, &command_args);
 		}
-		printf("\n");
+		write(STDOUT_FILENO, "\n", 1);
 	}
-	return (0);
+	return (write_status);
 }

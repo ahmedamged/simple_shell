@@ -22,25 +22,25 @@ int get_command_args(char *line, char ***args, char **path)
 		free(temp);
 		return (0);
 	}
-	string_array = strtok(temp, " ");
+	string_array = strtok(temp, " \t");
 	while (string_array != NULL)
 	{
 		length++;
-		string_array = strtok(NULL, " ");
+		string_array = strtok(NULL, " \t");
 	}
 	temp = strcpy(temp, line);
 	*args = safe_malloc(sizeof(char *) * (length + 1));
 	for (i = 0; i <= length; i++)
 		(*args)[i] = NULL;
 	temp_array = *args;
-	string_array = strtok(temp, " ");
+	string_array = strtok(temp, " \t");
 	for (i = 0; string_array != NULL; i++)
 	{
 		length = strlen(string_array);
 		temp_array[i] = safe_malloc(sizeof(char) * (length + 1));
 		temp_array[i] = strcpy(temp_array[i], string_array);
 		temp_array[i] = strcat(temp_array[i], "\0");
-		string_array = strtok(NULL, " ");
+		string_array = strtok(NULL, " \t");
 	}
 	temp_array[i] = NULL;
 	free(temp);
