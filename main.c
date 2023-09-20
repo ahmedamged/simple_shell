@@ -16,11 +16,14 @@ void free_args(char **args[])
 {
 	size_t i;
 
-	for (i = 0; (*args)[i] != NULL; i++)
+	if (*args != NULL)
 	{
-		free((*args)[i]);
+		for (i = 0; (*args)[i] != NULL; i++)
+		{
+			free((*args)[i]);
+		}
+		free(*args);
 	}
-	free(*args);
 }
 /**
  * read_command - read commands
@@ -100,7 +103,7 @@ int execute_command(char **argv[],
  */
 int handle_pipe(char *program_name, char **env)
 {
-	char **command_args;
+	char **command_args = NULL;
 	size_t i;
 
 	i = read_command(&command_args);
