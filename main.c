@@ -116,7 +116,7 @@ int handle_pipe(char *program_name, char **env)
 		execute_command(&path, &command_args, program_name, env);
 	else
 	{
-		fprintf(stderr, "%s: 1: %s: not found\n", program_name, command_args[0]);
+		perror(program_name);
 		free_args(&command_args);
 		exit(139);
 	}
