@@ -111,7 +111,6 @@ int handle_pipe(char *program_name, char **env)
 		free_args(&command_args);
 		printf("%s: No such file or directory\n", program_name);
 	}
-	printf("($) ");
 	return (0);
 }
 /**
