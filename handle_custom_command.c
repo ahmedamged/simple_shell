@@ -18,10 +18,10 @@ bool handle_custom_command(char *line, char ***args)
 
 	if (strncmp(line, "exit", 4) == 0)
 	{
-		if (strlen(line) > 4)
+		temp = strtok(line, " ");
+		temp = strtok(NULL, " ");
+		if (temp != NULL)
 		{
-			temp = strtok(line, " ");
-			temp = strtok(NULL, " ");
 			*args = safe_malloc(sizeof(char *) * 3);
 			(*args)[0] = "exit";
 			(*args)[1] = NULL;
@@ -68,6 +68,7 @@ bool execute_custom_command(char **path, char ***cmd, char *program_name)
 	{
 		if ((*cmd)[1] != NULL)
 		{
+			printf("args: %s\n", (*cmd)[1]);
 			exit_status = strtol((*cmd)[1], NULL, 10);
 			for (i = 0; (*cmd)[1][i] != '\0'; i++)
 			{
