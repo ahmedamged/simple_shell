@@ -83,7 +83,7 @@ bool execute_custom_command(char **path, char ***cmd, char *program_name)
 			free((*cmd)[1]);
 		}
 		free(*cmd);
-		exit(exit_status);
+		exit(exit_status < 0 ? -1 : exit_status);
 	}
 	else if (strcmp((*cmd)[0], "env") == 0)
 	{
