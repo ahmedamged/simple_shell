@@ -34,7 +34,7 @@ void free_args(char **args[])
 int read_command(char **path, char ***command_args)
 {
 	int status;
-	char *line = malloc(sizeof(char) * MAX_LINE_LENGTH);
+	char *line = safe_malloc(sizeof(char) * MAX_LINE_LENGTH);
 	ssize_t len = MAX_LINE_LENGTH;
 
 	status = _getline(&line, &len, stdin);

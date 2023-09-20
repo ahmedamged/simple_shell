@@ -22,17 +22,17 @@ bool handle_custom_command(char *line, char ***args)
 		{
 			temp = strtok(line, " ");
 			temp = strtok(NULL, " ");
-			*args = malloc(sizeof(char *) * 3);
+			*args = safe_malloc(sizeof(char *) * 3);
 			(*args)[0] = "exit";
 			(*args)[1] = NULL;
-			(*args)[1] = malloc(sizeof(char) * (strlen(temp) + 1));
+			(*args)[1] = safe_malloc(sizeof(char) * (strlen(temp) + 1));
 			(*args)[1] = strcpy((*args)[1], temp);
 			(*args)[1] = strcat((*args)[1], "\0");
 			(*args)[2] = NULL;
 		}
 		else
 		{
-			*args = malloc(sizeof(char *) * 2);
+			*args = safe_malloc(sizeof(char *) * 2);
 			(*args)[0] = "exit";
 			(*args)[1] = NULL;
 		}
@@ -41,7 +41,7 @@ bool handle_custom_command(char *line, char ***args)
 	}
 	else if (strncmp(line, "env", 3) == 0)
 	{
-		*args = malloc(sizeof(char *) * 2);
+		*args = safe_malloc(sizeof(char *) * 2);
 		(*args)[0] = "env";
 		(*args)[1] = NULL;
 		return (true);
@@ -136,12 +136,12 @@ ssize_t _getline(char **lineptr, ssize_t *len, FILE *file)
 	while (read_status > 0)
 	{
 		read_status = read(file->_fileno, buffer, MAX_READ_BUFFER_SIZE);
-		temp = malloc(sizeof(char) * (strlen(*lineptr) + 1));
+		temp = safe_malloc(sizeof(char) * (strlen(*lineptr) + 1));
 		temp = strcpy(temp, *lineptr);
 		read_len = strcspn(buffer, "\n");
 		temp_len = strlen(temp) + read_len;
 		free(*lineptr);
-		*lineptr = malloc(sizeof(char) * (temp_len + 1));
+		*lineptr = safe_malloc(sizeof(char) * (temp_len + 1));
 		*lineptr = strcpy(*lineptr, temp);
 		*lineptr = strncat(*lineptr, buffer, read_len);
 		*len += read_len;
