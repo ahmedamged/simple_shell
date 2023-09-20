@@ -12,7 +12,7 @@
  */
 int get_command_args(char *line, char ***args, char **path)
 {
-	char *temp = malloc(sizeof(char) * (strlen(line) + 1)), *string_array,
+	char *temp = safe_malloc(sizeof(char) * (strlen(line) + 1)), *string_array,
 		 **temp_array;
 	size_t length = 0, i;
 
@@ -29,7 +29,7 @@ int get_command_args(char *line, char ***args, char **path)
 		string_array = strtok(NULL, " ");
 	}
 	temp = strcpy(temp, line);
-	*args = malloc(sizeof(char *) * (length + 1));
+	*args = safe_malloc(sizeof(char *) * (length + 1));
 	for (i = 0; i <= length; i++)
 		(*args)[i] = NULL;
 	temp_array = *args;
@@ -37,7 +37,7 @@ int get_command_args(char *line, char ***args, char **path)
 	for (i = 0; string_array != NULL; i++)
 	{
 		length = strlen(string_array);
-		temp_array[i] = malloc(sizeof(char) * (length + 1));
+		temp_array[i] = safe_malloc(sizeof(char) * (length + 1));
 		temp_array[i] = strcpy(temp_array[i], string_array);
 		temp_array[i] = strcat(temp_array[i], "\0");
 		string_array = strtok(NULL, " ");
@@ -72,7 +72,7 @@ char *locate_relative_cmd(char *command)
 	while (path_temp != NULL && path_temp->value != NULL)
 	{
 		path_len = strlen(path_temp->value);
-		temp_command = malloc(sizeof(char) * (path_len + 2 + strlen(command) + 1));
+		temp_command = safe_malloc(sizeof(char) * (path_len + 2 + strlen(command) + 1));
 		temp_command = strcpy(temp_command, path_temp->value);
 		if (temp_command[path_len - 1] != '/')
 			temp_command = strcat(temp_command, "/");
@@ -111,7 +111,7 @@ char *locate_relative_cmd(char *command)
 path *_getenv(char *var)
 {
 	char *token, **envs = __environ, *env;
-	path *start = malloc(sizeof(path)), *current;
+	path *start = safe_malloc(sizeof(path)), *current;
 	size_t var_len = strlen(var), str_len;
 
 	start->next = NULL;
@@ -121,16 +121,16 @@ path *_getenv(char *var)
 	{
 		if (strncmp(var, *envs, var_len) == 0)
 		{
-			env = malloc(sizeof(char) * (strlen(*envs) + 1));
+			env = safe_malloc(sizeof(char) * (strlen(*envs) + 1));
 			env = strcpy(env, *envs);
 			token = strtok(env + var_len + 1, ":");
 			while (token != NULL)
 			{
 				str_len = strlen(token);
-				current->value = malloc(sizeof(char) * (str_len + 1));
+				current->value = safe_malloc(sizeof(char) * (str_len + 1));
 				strcpy(current->value, token);
 				current->value[str_len] = '\0';
-				current->next = malloc(sizeof(path));
+				current->next = safe_malloc(sizeof(path));
 				current->next->next = NULL;
 				current->next->value = NULL;
 				current = current->next;

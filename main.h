@@ -23,7 +23,8 @@ typedef struct path
 	struct path *next;
 	char *value;
 } path;
-int get_command_args(char *line, char ***args, char **path);
+extern char *program_name;
+int get_command_args(char *line, char ***args, char **pathz);
 char *locate_relative_cmd(char *command);
 path *_getenv(char *var);
 int execute_command(char **path, char **argv[],
@@ -33,4 +34,5 @@ bool execute_custom_command(char **path, char ***cmd, char *program_name);
 void free_args(char **args[]);
 void print_env(void);
 ssize_t _getline(char **lineptr, ssize_t *len, FILE *file);
+void *safe_malloc(size_t size);
 #endif

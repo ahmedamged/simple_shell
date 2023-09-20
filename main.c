@@ -4,6 +4,7 @@
 #define NOT_FOUND 404
 #define IS_PART_OF_PIPE 0
 #define MAX_LINE_LENGTH 1024
+char *program_name;
 /**
  * free_args - memory
  * @args: pointer to free
@@ -138,9 +139,10 @@ int main(int argc, char *argv[], char **env)
 	char **command_args = NULL, *path = NULL;
 
 	(void)argc;
+	program_name = argv[0];
 	if (isatty(STDIN_FILENO) == IS_PART_OF_PIPE)
 	{
-		return (handle_pipe(argv[0], env));
+		return (handle_pipe(program_name, env));
 	}
 	if (isatty(STDIN_FILENO) != IS_PART_OF_PIPE)
 	{
@@ -150,11 +152,11 @@ int main(int argc, char *argv[], char **env)
 		{
 			if (status != NOT_FOUND && status != EOF)
 			{
-				execute_command(&path, &command_args, argv[0], env);
+				execute_command(&path, &command_args, program_name, env);
 			}
 			else
 			{
-				fprintf(stderr, "%s: 1: %s: not found\n", argv[0], command_args[0]);
+				fprintf(stderr, "%s: 1: %s: not found\n", program_name, command_args[0]);
 				free_args(&command_args);
 				free(path);
 			}
