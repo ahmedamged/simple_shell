@@ -65,7 +65,6 @@ bool execute_custom_command(char **path, char ***cmd)
 		if ((*cmd)[1] != NULL)
 		{
 			exit_status = strtol((*cmd)[1], NULL, 10);
-			printf("exiting with status: %ld\n", exit_status);
 			free((*cmd)[1]);
 		}
 		free(*cmd);
