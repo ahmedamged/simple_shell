@@ -47,7 +47,9 @@ int get_command_args(char *line, char ***args, char **path)
 	temp = locate_relative_cmd(**args);
 	if (temp == NULL)
 		return (404);
-	*path = temp;
+	*path = safe_malloc(sizeof(char) * strlen(temp));
+	*path = strcpy(*path, temp);
+	free(temp);
 	return (0);
 }
 /**
@@ -72,7 +74,8 @@ char *locate_relative_cmd(char *command)
 	while (path_temp != NULL && path_temp->value != NULL)
 	{
 		path_len = strlen(path_temp->value);
-		temp_command = safe_malloc(sizeof(char) * (path_len + 2 + strlen(command) + 1));
+		temp_command = safe_malloc(sizeof(char) *
+								   (path_len + 2 + strlen(command) + 1));
 		temp_command = strcpy(temp_command, path_temp->value);
 		if (temp_command[path_len - 1] != '/')
 			temp_command = strcat(temp_command, "/");
