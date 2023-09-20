@@ -33,11 +33,9 @@ void free_args(char **args[])
 int read_command(char ***command_args)
 {
 	int status;
-	char *line = malloc(sizeof(char) * MAX_LINE_LENGTH) /* , *test = malloc(sizeof(char) * MAX_LINE_LENGTH) */;
-	size_t len = MAX_LINE_LENGTH /* , test_len = MAX_LINE_LENGTH */;
+	char *line = malloc(sizeof(char) * MAX_LINE_LENGTH);
+	size_t len = MAX_LINE_LENGTH;
 
-	/* _getline(&test, &test_len, stdin);
-	printf("result of _getine: %s\n", test); */
 	status = _getline(&line, &len, stdin);
 	if (status != EOF)
 	{
@@ -113,7 +111,7 @@ int handle_pipe(char *program_name, char **env)
 		free_args(&command_args);
 		printf("%s: No such file or directory\n", program_name);
 	}
-	printf(":) ");
+	printf("($) ");
 	return (0);
 }
 /**
@@ -140,7 +138,7 @@ int main(int argc, char *argv[], char **env)
 	}
 	if (isatty(STDIN_FILENO) != IS_PART_OF_PIPE)
 	{
-		printf(":) ");
+		printf("($) ");
 		status = read_command(&command_args);
 		while (status != EOF)
 		{
@@ -153,7 +151,7 @@ int main(int argc, char *argv[], char **env)
 				printf("%s: No such file or directory\n", argv[0]);
 				free_args(&command_args);
 			}
-			printf(":) ");
+			printf("($) ");
 			status = read_command(&command_args);
 		}
 		printf("\n");
