@@ -161,8 +161,6 @@ int main(int argc, char *argv[], char **env)
 			printf("($) ");
 			status = read_command(&path, &command_args);
 		}
-		if (path != NULL)
-			free(path);
 		printf("\n");
 	}
 	return (0);
