@@ -37,7 +37,6 @@ int read_command(char **path, char ***command_args)
 	char *line = safe_malloc(sizeof(char) * MAX_LINE_LENGTH);
 	ssize_t len = MAX_LINE_LENGTH;
 
-	line = "";
 	status = _getline(&line, &len, stdin);
 	if (strlen(line) == 1 && line[0] == '\n')
 	{
