@@ -38,7 +38,6 @@ int read_command(char **path, char ***command_args)
 	ssize_t len = MAX_LINE_LENGTH;
 
 	status = _getline(&line, &len, stdin);
-
 	if (status != EOF)
 	{
 		if (strlen(line) == 1 && line[0] == '\n')
@@ -154,6 +153,7 @@ int main(int argc, char *argv[], char **env)
 		{
 			if (status != IS_NEW_LINE)
 			{
+				printf("status: %d\n", status);
 				if (status != NOT_FOUND && status != EOF)
 				{
 					execute_command(&path, &command_args, program_name, env);
@@ -162,7 +162,6 @@ int main(int argc, char *argv[], char **env)
 				{
 					perror(program_name);
 					free_args(&command_args);
-					free(path);
 				}
 			}
 			printf("($) ");
