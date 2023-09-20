@@ -126,7 +126,7 @@ ssize_t _getline(char **lineptr, ssize_t *len, FILE *file)
 
 	fflush(NULL);
 	read_status = read(file->_fileno, buffer, MAX_READ_BUFFER_SIZE);
-	if (read_status <= *len)
+	if (read_status < *len)
 	{
 		if (read_status == 0)
 			return (-1);

@@ -33,3 +33,39 @@ void free_path(path **path_temp)
 		free(temp);
 	}
 }
+/**
+ * free_args - memory
+ * @args: pointer to free
+ *
+ * frees memory of args
+ *
+ * Return: void
+ */
+void free_args(char **args[])
+{
+	size_t i;
+
+	if (*args != NULL)
+	{
+		for (i = 0; (*args)[i] != NULL; i++)
+		{
+			free((*args)[i]);
+		}
+		free(*args);
+	}
+}
+/**
+ * is_empty
+ */
+bool is_empty(char *line)
+{
+	while (*line != '\0')
+	{
+		if (!isspace(*line))
+		{
+			return (false);
+		}
+		line++;
+	}
+	return (true);
+}

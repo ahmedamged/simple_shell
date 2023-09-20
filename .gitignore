@@ -1,3 +1,4 @@
 generate-authors.sh
 .vscode/**
 hsh
+/*.bash

@@ -2,27 +2,6 @@
 
 char *program_name;
 /**
- * free_args - memory
- * @args: pointer to free
- *
- * frees memory of args
- *
- * Return: void
- */
-void free_args(char **args[])
-{
-	size_t i;
-
-	if (*args != NULL)
-	{
-		for (i = 0; (*args)[i] != NULL; i++)
-		{
-			free((*args)[i]);
-		}
-		free(*args);
-	}
-}
-/**
  * read_command - read commands
  * @path: fath for command
  * @command_args: command args
@@ -109,18 +88,42 @@ int execute_command(char **path, char **argv[],
  */
 int handle_pipe(char *program_name, char **env)
 {
-	char **command_args = NULL, *path = NULL;
-	size_t i;
+	char **command_args = NULL, *path = NULL,
+		 *line = safe_malloc(sizeof(char) * MAX_LINE_LENGTH), *one_line,
+		 *temp, **save_ptr = safe_malloc(sizeof(char) * MAX_LINE_LENGTH);
+	int i;
+	ssize_t len = MAX_LINE_LENGTH;
 
-	i = read_command(&path, &command_args);
-	if (i == 0)
-		execute_command(&path, &command_args, program_name, env);
-	else
+	i = _getline(&line, &len, stdin);
+	if (!is_empty(line))
 	{
-		perror(program_name);
-		free_args(&command_args);
-		exit(139);
+
+		if (i == EOF)
+		{
+			perror(program_name);
+			free_args(&command_args);
+			exit(139);
+		}
+		one_line = strtok_r(line, "\n", save_ptr);
+		while (one_line != NULL)
+		{
+			temp = safe_malloc(sizeof(char) * (strlen(one_line) + 1));
+			temp = strcpy(temp, one_line);
+			i = get_command_args(temp, &command_args, &path);
+			if (i != NOT_FOUND && i != EOF)
+				execute_command(&path, &command_args, program_name, env);
+			else
+			{
+				perror(program_name);
+				free(path);
+				free_args(&command_args);
+			}
+			free(temp);
+			one_line = strtok_r(NULL, "\n", save_ptr);
+		}
 	}
+	free(save_ptr);
+	free(line);
 	return (0);
 }
 /**
