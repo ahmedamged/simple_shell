@@ -40,7 +40,7 @@ int read_command(char **path, char ***command_args)
 	char *line = malloc(sizeof(char) * MAX_LINE_LENGTH);
 	size_t len = MAX_LINE_LENGTH;
 
-	status = _getline(&line, &len, stdin);
+	status = getline(&line, &len, stdin);
 	if (status != EOF)
 	{
 		if ((line)[strlen(line) - 1] == '\n')

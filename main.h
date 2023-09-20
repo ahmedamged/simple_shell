@@ -31,5 +31,5 @@ bool handle_custom_command(char *line, char ***args);
 bool execute_custom_command(char **path, char ***cmd, char *program_name);
 void free_args(char **args[]);
 void print_env(void);
-ssize_t _getline(char **lineptr, size_t *len, FILE *file);
+ssize_t getline(char **lineptr, size_t *len, FILE *file);
 #endif

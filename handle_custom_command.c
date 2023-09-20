@@ -118,7 +118,7 @@ void print_env(void)
  *
  * Return: Pointer to the entered line
  */
-ssize_t _getline(char **lineptr, size_t *len, FILE *file)
+ssize_t getline(char **lineptr, size_t *len, FILE *file)
 {
 	static char buffer[MAX_READ_BUFFER_SIZE + 1] = {'\0'}, *temp;
 	static int read_len = 0, read_status, temp_len;
