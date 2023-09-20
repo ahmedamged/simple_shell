@@ -153,7 +153,6 @@ int main(int argc, char *argv[], char **env)
 		{
 			if (status != IS_NEW_LINE)
 			{
-				printf("status: %d\n", status);
 				if (status != NOT_FOUND && status != EOF)
 				{
 					execute_command(&path, &command_args, program_name, env);
