@@ -37,6 +37,7 @@ int get_command_args(char *line, char ***args, char **path)
 	string_array = strtok(temp, " ");
 	for (i = 0; string_array != NULL; i++)
 	{
+		printf("current arg: %s\n", string_array);
 		length = strlen(string_array);
 		temp_array[i] = malloc(sizeof(char) * (length + 1));
 		temp_array[i] = strcpy(temp_array[i], string_array);

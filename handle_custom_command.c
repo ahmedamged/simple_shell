@@ -124,15 +124,19 @@ ssize_t _getline(char **lineptr, ssize_t *len, FILE *file)
 	static ssize_t read_len = 0, read_status, temp_len;
 
 	fflush(NULL);
-	free(*lineptr);
-	*lineptr = malloc(sizeof(char));
-	**lineptr = '\0';
 	read_status = read(file->_fileno, buffer, MAX_READ_BUFFER_SIZE);
-	temp = "\0";
-	temp = malloc(sizeof(char) * strlen(*lineptr) + 1);
-	temp = strcpy(temp, *lineptr);
+	if (read_status <= *len)
+	{
+		if (read_status == 0)
+			return (-1);
+		*lineptr = strcpy(*lineptr, buffer);
+		return (read_status);
+	}
 	while (read_status > 0)
 	{
+		read_status = read(file->_fileno, buffer, MAX_READ_BUFFER_SIZE);
+		temp = malloc(sizeof(char) * (strlen(*lineptr) + 1));
+		temp = strcpy(temp, *lineptr);
 		read_len = strcspn(buffer, "\n");
 		temp_len = strlen(temp) + read_len;
 		free(*lineptr);
@@ -143,12 +147,7 @@ ssize_t _getline(char **lineptr, ssize_t *len, FILE *file)
 		if (read_status < MAX_READ_BUFFER_SIZE && buffer[read_status - 1] == '\n')
 			break;
 		free(temp);
-		read_status = read(file->_fileno, buffer, 4);
-		temp = malloc(sizeof(char) * (strlen(*lineptr) + 1));
-		temp = strcpy(temp, *lineptr);
-	}
+		}
 	free(temp);
-	if (read_status == 0)
-		return (-1);
 	return (temp_len);
 }
