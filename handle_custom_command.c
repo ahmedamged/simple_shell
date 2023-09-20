@@ -62,12 +62,12 @@ bool execute_custom_command(char **path, char ***cmd)
 
 	if (strcmp((*cmd)[0], "exit") == 0)
 	{
+		printf("exiting\n");
 		if ((*cmd)[1] != NULL)
 		{
 			exit_status = atoi((*cmd)[1]);
 			free((*cmd)[1]);
 		}
-		free(*path);
 		free(*cmd);
 		exit(exit_status);
 	}
