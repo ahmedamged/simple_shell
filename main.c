@@ -112,7 +112,7 @@ int handle_pipe(char *program_name, char **env)
 	else
 	{
 		free_args(&command_args);
-		printf("%s: No such file or directory\n", program_name);
+		perror(program_name);
 	}
 	return (0);
 }
@@ -150,7 +150,7 @@ int main(int argc, char *argv[], char **env)
 			}
 			else
 			{
-				printf("%s: No such file or directory\n", argv[0]);
+				perror(argv[0]);
 				free_args(&command_args);
 			}
 			printf("($) ");
