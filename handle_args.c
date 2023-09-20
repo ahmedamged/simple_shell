@@ -2,7 +2,7 @@
 
 /**
  * get_command_args - command format
- * @line: string of command adn args
+ * @line: string of command and args
  * @args: args
  *
  * formats line into command and args
@@ -34,22 +34,23 @@ int get_command_args(char *line, char ***args)
 		(*args)[i] = NULL;
 	temp_array = *args;
 	string_array = strtok(temp, " ");
-	while (string_array != NULL)
+	for (i = 0; string_array != NULL; i++)
 	{
 		length = strlen(string_array);
-		*temp_array = malloc(sizeof(char) * (length + 1));
-		*temp_array = strcpy(*temp_array, string_array);
-		*temp_array = strcat(*temp_array, "\0");
-		temp_array++;
+		temp_array[i] = malloc(sizeof(char) * (length + 1));
+		temp_array[i] = strcpy(temp_array[i], string_array);
+		temp_array[i] = strcat(temp_array[i], "\0");
 		string_array = strtok(NULL, " ");
 	}
+	temp_array[i] = NULL;
 	free(temp);
 	temp = locate_relative_cmd(**args);
 	if (temp == NULL)
 		return (404);
-	free(**args);
-	**args = temp;
-	*temp_array = NULL;
+	if (temp == *args[0])
+		return (0);
+	free(*args[0]);
+	*args[0] = temp;
 	return (0);
 }
 /**
