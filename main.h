@@ -11,6 +11,11 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <signal.h>
+#define EXEC_ERROR -1
+#define NOT_FOUND 404
+#define IS_PART_OF_PIPE 0
+#define MAX_LINE_LENGTH 1024
+#define IS_NEW_LINE 5
 /**
  * struct path - Typedef for command args
  * @next: pointer for next entity

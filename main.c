@@ -1,9 +1,5 @@
 #include "main.h"
 
-#define EXEC_ERROR -1
-#define NOT_FOUND 404
-#define IS_PART_OF_PIPE 0
-#define MAX_LINE_LENGTH 1024
 char *program_name;
 /**
  * free_args - memory
@@ -42,7 +38,12 @@ int read_command(char **path, char ***command_args)
 	ssize_t len = MAX_LINE_LENGTH;
 
 	status = _getline(&line, &len, stdin);
-	if (status != EOF)
+	if (strlen(line) == 1 && line[0] == '\n')
+	{
+		free(line);
+		return (IS_NEW_LINE);
+	}
+	else if (status != EOF)
 	{
 		if ((line)[strlen(line) - 1] == '\n')
 			(line)[strlen(line) - 1] = '\0';
@@ -150,15 +151,18 @@ int main(int argc, char *argv[], char **env)
 		status = read_command(&path, &command_args);
 		while (status != EOF)
 		{
-			if (status != NOT_FOUND && status != EOF)
+			if (status != IS_NEW_LINE)
 			{
-				execute_command(&path, &command_args, program_name, env);
-			}
-			else
-			{
-				fprintf(stderr, "%s: 1: %s: not found\n", program_name, command_args[0]);
-				free_args(&command_args);
-				free(path);
+				if (status != NOT_FOUND && status != EOF)
+				{
+					execute_command(&path, &command_args, program_name, env);
+				}
+				else
+				{
+					perror(program_name);
+					free_args(&command_args);
+					free(path);
+				}
 			}
 			printf("($) ");
 			status = read_command(&path, &command_args);
