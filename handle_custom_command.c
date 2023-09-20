@@ -1,5 +1,7 @@
 #include "main.h"
 #define MAX_READ_BUFFER_SIZE 1024
+static char buffer[MAX_READ_BUFFER_SIZE + 1] = {'\0'}, *temp;
+static ssize_t read_len = 0, read_status, temp_len;
 /**
  * handle_custom_command - command format
  * @line: string to find argument
@@ -121,8 +123,6 @@ void print_env(void)
  */
 ssize_t _getline(char **lineptr, ssize_t *len, FILE *file)
 {
-	static char buffer[MAX_READ_BUFFER_SIZE + 1] = {'\0'}, *temp;
-	static ssize_t read_len = 0, read_status, temp_len;
 
 	fflush(NULL);
 	read_status = read(file->_fileno, buffer, MAX_READ_BUFFER_SIZE);
