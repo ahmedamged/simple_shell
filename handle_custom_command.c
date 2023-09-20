@@ -118,10 +118,10 @@ void print_env(void)
  *
  * Return: Pointer to the entered line
  */
-ssize_t getline(char **lineptr, size_t *len, FILE *file)
+ssize_t _getline(char **lineptr, ssize_t *len, FILE *file)
 {
 	static char buffer[MAX_READ_BUFFER_SIZE + 1] = {'\0'}, *temp;
-	static int read_len = 0, read_status, temp_len;
+	static ssize_t read_len = 0, read_status, temp_len;
 
 	fflush(NULL);
 	free(*lineptr);
@@ -150,5 +150,5 @@ ssize_t getline(char **lineptr, size_t *len, FILE *file)
 	free(temp);
 	if (read_status == 0)
 		return (-1);
-	return (*len);
+	return (temp_len);
 }
