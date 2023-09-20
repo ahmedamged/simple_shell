@@ -33,4 +33,5 @@ bool execute_custom_command(char **path, char ***cmd, char *program_name);
 void free_args(char **args[]);
 void print_env(void);
 ssize_t _getline(char **lineptr, ssize_t *len, FILE *file);
+char *handle_quoted_args(char *line, char *delim);
 #endif
