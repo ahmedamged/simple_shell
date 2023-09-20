@@ -66,7 +66,7 @@ int execute_command(char **path, char **argv[],
 {
 	pid_t pid;
 
-	if (!execute_custom_command(argv))
+	if (!execute_custom_command(path, argv))
 	{
 		pid = fork();
 		if (pid == EXEC_ERROR)
@@ -154,10 +154,13 @@ int main(int argc, char *argv[], char **env)
 			{
 				perror(argv[0]);
 				free_args(&command_args);
+				free(path);
 			}
 			printf("($) ");
 			status = read_command(&path, &command_args);
 		}
+		if (path != NULL)
+			free(path);
 		printf("\n");
 	}
 	return (0);

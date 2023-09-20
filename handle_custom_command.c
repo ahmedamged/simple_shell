@@ -1,5 +1,5 @@
 #include "main.h"
-#define MAX_READ_BUFFER_SIZE 5
+#define MAX_READ_BUFFER_SIZE 1024
 /**
  * handle_custom_command - command format
  * @line: string to find argument
@@ -49,13 +49,14 @@ bool handle_custom_command(char *line, char ***args)
 /**
  * execute_custom_command - command format
  * @cmd: argument of command
+ * @path: path of command
  *
  * handles custom argument
  *
  * Return: true if found,
  * false if general
  */
-bool execute_custom_command(char ***cmd)
+bool execute_custom_command(char **path, char ***cmd)
 {
 	int exit_status = 0;
 
@@ -66,11 +67,13 @@ bool execute_custom_command(char ***cmd)
 			exit_status = atoi((*cmd)[1]);
 			free((*cmd)[1]);
 		}
+		free(*path);
 		free(*cmd);
 		exit(exit_status);
 	}
 	else if (strcmp((*cmd)[0], "env") == 0)
 	{
+		free(*path);
 		free(*cmd);
 		print_env();
 		return (true);

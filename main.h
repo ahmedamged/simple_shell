@@ -27,7 +27,7 @@ path *_getenv(char *var);
 int execute_command(char **path, char **argv[],
 					char *program_name, char **env);
 bool handle_custom_command(char *line, char ***args);
-bool execute_custom_command(char ***cmd);
+bool execute_custom_command(char **path, char ***cmd);
 void free_args(char **args[]);
 void print_env(void);
 ssize_t _getline(char **lineptr, size_t *len, FILE *file);
