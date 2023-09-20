@@ -149,6 +149,6 @@ ssize_t _getline(char **lineptr, size_t *len, FILE *file)
 	}
 	free(temp);
 	if (read_status == 0)
-		read_status = -1;
-	return (read_status);
+		return (-1);
+	return (*len);
 }
