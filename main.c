@@ -72,7 +72,7 @@ int execute_command(char **path, char **argv[],
 		if (pid == EXEC_ERROR)
 		{
 			perror(program_name);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 		if (pid == 0)
 		{
@@ -81,9 +81,9 @@ int execute_command(char **path, char **argv[],
 				free(*path);
 				free_args(argv);
 				perror(program_name);
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
-			exit(0);
+			exit(EXIT_SUCCESS);
 		}
 		else
 		{

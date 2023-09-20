@@ -58,13 +58,14 @@ bool handle_custom_command(char *line, char ***args)
  */
 bool execute_custom_command(char **path, char ***cmd)
 {
-	int exit_status = 0;
+	long int exit_status = EXIT_SUCCESS;
 
 	if (strcmp((*cmd)[0], "exit") == 0)
 	{
 		if ((*cmd)[1] != NULL)
 		{
-			exit_status = atoi((*cmd)[1]);
+			exit_status = strtol((*cmd)[1], NULL, 10);
+			printf("exiting with status: %ld\n", exit_status);
 			free((*cmd)[1]);
 		}
 		free(*cmd);
