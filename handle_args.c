@@ -44,12 +44,12 @@ int get_command_args(char *line, char ***args, char **path)
 	}
 	temp_array[i] = NULL;
 	free(temp);
-	temp = locate_relative_cmd(**args);
+	temp = safe_malloc(sizeof(char) * (strlen(**args) + 2));
+	temp = strcpy(temp, **args);
+	temp = locate_relative_cmd(temp);
 	if (temp == NULL)
 		return (404);
-	*path = safe_malloc(sizeof(char) * strlen(temp));
-	*path = strcpy(*path, temp);
-	free(temp);
+	*path = temp;
 	return (0);
 }
 /**
@@ -90,6 +90,7 @@ char *locate_relative_cmd(char *command)
 				path_temp = path_temp->next;
 				free(temp);
 			}
+			free(command);
 			return (temp_command);
 		}
 		free(temp_command);
