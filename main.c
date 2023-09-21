@@ -129,7 +129,7 @@ int handle_pipe(char *program_name, char **env)
 	}
 	free(save_ptr);
 	free(line);
-	return (status);
+	return (status != 90 ? status : 0);
 }
 /**
  * main - simple shell
