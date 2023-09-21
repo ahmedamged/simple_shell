@@ -93,7 +93,7 @@ int handle_pipe(char *program_name, char **env)
 	char **command_args = NULL, *path = NULL,
 		 *line = safe_malloc(sizeof(char) * MAX_LINE_LENGTH), *one_line,
 		 *temp, **save_ptr = safe_malloc(sizeof(char) * MAX_LINE_LENGTH);
-	int i, status;
+	int i, status = 0;
 	ssize_t len = MAX_LINE_LENGTH;
 
 	i = _getline(&line, &len, stdin);
@@ -129,7 +129,7 @@ int handle_pipe(char *program_name, char **env)
 	}
 	free(save_ptr);
 	free(line);
-	return (status != 90 ? status : 0);
+	return (status);
 }
 /**
  * main - simple shell
