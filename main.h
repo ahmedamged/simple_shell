@@ -29,7 +29,7 @@ typedef struct path
 	struct path *next;
 	char *value;
 } path;
-extern char *program_name;
+extern char *program_name, **temp_env;
 int get_command_args(char *line, char ***args, char **pathz);
 char *locate_relative_cmd(char *command);
 path *_getenv(char *var);

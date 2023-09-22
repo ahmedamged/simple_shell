@@ -1,6 +1,6 @@
 #include "main.h"
 
-char *program_name;
+char *program_name, **temp_env;
 /**
  * read_command - read commands
  * @path: fath for command
@@ -155,6 +155,7 @@ int main(int argc, char *argv[], char **env)
 
 	(void)argc;
 	program_name = argv[0];
+	temp_env = env;
 	if (isatty(STDIN_FILENO) == IS_PART_OF_PIPE)
 	{
 		return (handle_pipe(program_name, env));

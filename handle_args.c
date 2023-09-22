@@ -67,7 +67,7 @@ char *locate_relative_cmd(char *command)
 	size_t path_len;
 	char *temp_command;
 
-	if (stat(command, &st) == 0)
+	if (command[0] == '/')
 		return (command);
 	path_temp = _getenv("PATH");
 	temp = path_temp;
@@ -93,8 +93,6 @@ char *locate_relative_cmd(char *command)
 		path_temp = path_temp->next;
 		free(temp);
 	}
-	free(path_temp->next);
-	free(path_temp->value);
 	free(path_temp);
 	free(command);
 	return (NULL);
@@ -109,7 +107,7 @@ char *locate_relative_cmd(char *command)
  */
 path *_getenv(char *var)
 {
-	char *token, **envs = __environ, *env;
+	char *token, **envs = temp_env, *env;
 	path *start = safe_malloc(sizeof(path)), *current;
 	size_t var_len = strlen(var), str_len;
 
@@ -118,7 +116,6 @@ path *_getenv(char *var)
 	current = start;
 	while (*envs != NULL)
 	{
-		printf("%s\n", *envs + var_len);
 		if (strncmp(var, *envs, var_len) == 0 && (*envs + var_len)[0] == '=')
 		{
 			env = safe_malloc(sizeof(char) * (strlen(*envs) + 1));
@@ -141,5 +138,6 @@ path *_getenv(char *var)
 		}
 		envs++;
 	}
+	free(start);
 	return (NULL);
 }
