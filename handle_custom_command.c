@@ -133,6 +133,7 @@ ssize_t _getline(char **lineptr, ssize_t *len, FILE *file)
 		*lineptr = strcpy(*lineptr, buffer);
 		return (read_status);
 	}
+	**lineptr = '\0';
 	while (read_status > 0)
 	{
 		read_status = read(file->_fileno, buffer, MAX_READ_BUFFER_SIZE);

@@ -11,6 +11,7 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <signal.h>
+#include <stdint.h>
 #define EXEC_ERROR -1
 #define NOT_FOUND 404
 #define IS_PART_OF_PIPE 0
