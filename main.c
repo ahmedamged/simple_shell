@@ -45,7 +45,7 @@ int execute_command(char **path, char **argv[],
 					char *p, char **env)
 {
 	pid_t pid;
-	int child_status, exit_status;
+	int child_status, exit_status = 0;
 
 	if (!execute_custom_command(path, argv, p))
 	{
