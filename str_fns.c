@@ -45,8 +45,8 @@ char *safe_cpy(char *dest, char *src)
  */
 bool is_path(char *cmd)
 {
-	bool is_path = cmd[0] == '/' || strncmp(cmd, "./", 2)
-	|| strncmp(cmd, "../", 3);
+	bool is_path = cmd[0] == '/' || strncmp(cmd, "./", 2) == 0
+	|| strncmp(cmd, "../", 3) == 0;
 
 	return (is_path);
 }

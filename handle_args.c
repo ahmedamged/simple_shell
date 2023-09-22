@@ -81,7 +81,6 @@ char *locate_relative_cmd(char *command)
 			temp_command = strcat(temp_command, "/");
 		temp_command = strcat(temp_command, command);
 		temp_command = strcat(temp_command, "\0");
-		printf("command: %s\n", temp_command);
 		if (stat(temp_command, &st) == 0)
 		{
 			free_path(&path_temp);
