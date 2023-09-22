@@ -15,7 +15,7 @@ void *safe_malloc(size_t size, char *program_name)
 
 	if (temp == NULL)
 	{
-		p_error();
+		perror(program_name);
 		exit(1);
 	}
 	return (temp);

@@ -113,7 +113,7 @@ char *locate_relative_cmd(char *command, char *program_name)
  */
 path *_getenv(char *var, char *program_name)
 {
-	char *token, **envs = __environ, *env;
+	char *token, **envs = __environ, *env = NULL;
 	path *start = safe_malloc(sizeof(path), program_name), *current;
 	size_t var_len = strlen(var);
 

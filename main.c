@@ -145,7 +145,7 @@ int main(int argc, char *argv[], char **env)
 {
 	int read_status, write_status;
 	char **command_args = NULL, *path = NULL,
-		 p = argv[0], temp_env = env;
+		 *p = argv[0];
 
 	(void)argc;
 

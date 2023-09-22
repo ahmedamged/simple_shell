@@ -74,11 +74,11 @@ bool execute_custom_command(char **path, char ***cmd, char *program_name)
 			{
 				if (!isdigit((*cmd)[1][i]))
 				{
-					fprintf(stderr, "%s: 2: exit: Illegal number: %s\n",
+					fprintf(stderr, "%s: 1: exit: Illegal number: %s\n",
 							program_name, (*cmd)[1]);
 					free((*cmd)[1]);
 					free(*cmd);
-					return (true);
+					exit(2);
 				}
 			}
 			free((*cmd)[1]);
