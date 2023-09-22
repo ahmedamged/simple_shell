@@ -6,13 +6,14 @@ static ssize_t read_len = 0, read_status, temp_len;
  * handle_custom_command - command format
  * @line: string to find argument
  * @args: arguments
+ * @program_name: program name
  *
  * handles custom argument
  *
  * Return: true if found,
  * false if general
  */
-bool handle_custom_command(char *line, char ***args)
+bool handle_custom_command(char *line, char ***args, char *program_name)
 {
 	char *temp = NULL;
 
@@ -22,17 +23,17 @@ bool handle_custom_command(char *line, char ***args)
 		temp = strtok(NULL, " ");
 		if (temp != NULL)
 		{
-			*args = safe_malloc(sizeof(char *) * 3);
+			*args = safe_malloc(sizeof(char *) * 3, program_name);
 			(*args)[0] = "exit";
 			(*args)[1] = NULL;
-			(*args)[1] = safe_malloc(sizeof(char) * (strlen(temp) + 1));
+			(*args)[1] = safe_malloc(sizeof(char) * (strlen(temp) + 1), program_name);
 			(*args)[1] = strcpy((*args)[1], temp);
 			(*args)[1] = strcat((*args)[1], "\0");
 			(*args)[2] = NULL;
 		}
 		else
 		{
-			*args = safe_malloc(sizeof(char *) * 2);
+			*args = safe_malloc(sizeof(char *) * 2, program_name);
 			(*args)[0] = "exit";
 			(*args)[1] = NULL;
 		}
@@ -41,7 +42,7 @@ bool handle_custom_command(char *line, char ***args)
 	}
 	else if (strncmp(line, "env", 3) == 0)
 	{
-		*args = safe_malloc(sizeof(char *) * 2);
+		*args = safe_malloc(sizeof(char *) * 2, program_name);
 		(*args)[0] = "env";
 		(*args)[1] = NULL;
 		return (true);
@@ -116,12 +117,13 @@ void print_env(void)
  * @lineptr: address of buffer to fill
  * @len: size of buffer
  * @file: file to read
+ * @program_name: program name
  *
  * getline at home
  *
  * Return: Pointer to the entered line
  */
-ssize_t _getline(char **lineptr, ssize_t *len, FILE *file)
+ssize_t _getline(char **lineptr, ssize_t *len, FILE *file, char *program_name)
 {
 
 	fflush(NULL);
@@ -137,12 +139,12 @@ ssize_t _getline(char **lineptr, ssize_t *len, FILE *file)
 	while (read_status > 0)
 	{
 		read_status = read(file->_fileno, buffer, MAX_READ_BUFFER_SIZE);
-		temp = safe_malloc(sizeof(char) * (strlen(*lineptr) + 1));
+		temp = safe_malloc(sizeof(char) * (strlen(*lineptr) + 1), program_name);
 		temp = strcpy(temp, *lineptr);
 		read_len = strcspn(buffer, "\n");
 		temp_len = strlen(temp) + read_len;
 		free(*lineptr);
-		*lineptr = safe_malloc(sizeof(char) * (temp_len + 1));
+		*lineptr = safe_malloc(sizeof(char) * (temp_len + 1), program_name);
 		*lineptr = strcpy(*lineptr, temp);
 		*lineptr = strncat(*lineptr, buffer, read_len);
 		*len += read_len;

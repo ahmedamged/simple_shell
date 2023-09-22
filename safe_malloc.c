@@ -3,18 +3,19 @@
 /**
  * safe_malloc - malloc with protection
  * @size: size of space
+ * @program_name: program name
  *
  * safe malloc
  *
  * Return: pointer to new area
  */
-void *safe_malloc(size_t size)
+void *safe_malloc(size_t size, char *program_name)
 {
 	void *temp = malloc(size);
 
 	if (temp == NULL)
 	{
-		perror(program_name);
+		p_error();
 		exit(1);
 	}
 	return (temp);
@@ -60,12 +61,20 @@ void free_args(char **args[])
 		free(*args);
 	}
 }
+/**
+ * free_many - memory
+ * @count: number of pointers
+ *
+ * frees memory of args
+ *
+ * Return: void
+ */
 void free_many(int count, ...)
 {
 	int i;
 	va_list args;
-	va_start(args, count);
 
+	va_start(args, count);
 	for (i = 0; i < count; i++)
 		free(va_arg(args, void *));
 }

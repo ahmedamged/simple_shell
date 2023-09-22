@@ -23,15 +23,19 @@ bool is_empty(char *line)
  * safe_cpy - copy str
  * @dest: destination
  * @src: destination
+ * @program_name: destination
  *
  * copys str
  *
  * Return: char *
  */
-char *safe_cpy(char *dest, char *src)
+char *safe_cpy(char *dest, char *src, char *program_name)
 {
-	dest = safe_malloc(sizeof(char) * (strlen(src) + 1));
+	int len = strlen(src);
+
+	dest = safe_malloc(sizeof(char) * (len + 1), program_name);
 	dest = strcpy(dest, src);
+	dest[len] = '\0';
 	return (dest);
 }
 /**
@@ -45,8 +49,8 @@ char *safe_cpy(char *dest, char *src)
  */
 bool is_path(char *cmd)
 {
-	bool is_path = cmd[0] == '/' || strncmp(cmd, "./", 2) == 0
-	|| strncmp(cmd, "../", 3) == 0;
+	bool is_path = cmd[0] == '/' || strncmp(cmd, "./", 2) == 0 ||
+				   strncmp(cmd, "../", 3) == 0;
 
 	return (is_path);
 }

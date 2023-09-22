@@ -30,21 +30,21 @@ typedef struct path
 	struct path *next;
 	char *value;
 } path;
-extern char *program_name, **temp_env;
-int get_command_args(char *line, char ***args, char **pathz);
-char *locate_relative_cmd(char *command);
-path *_getenv(char *var);
+int get_command_args(char *line, char ***args, char **path,
+					 char *program_name);
+char *locate_relative_cmd(char *command, char *program_name);
+path *_getenv(char *var, char *program_name);
 int execute_command(char **path, char **argv[],
 					char *program_name, char **env);
-bool handle_custom_command(char *line, char ***args);
+bool handle_custom_command(char *line, char ***args, char *program_name);
 bool execute_custom_command(char **path, char ***cmd, char *program_name);
 void free_args(char **args[]);
 void print_env(void);
-ssize_t _getline(char **lineptr, ssize_t *len, FILE *file);
-void *safe_malloc(size_t size);
+ssize_t _getline(char **lineptr, ssize_t *len, FILE *file, char *program_name);
+void *safe_malloc(size_t size, char *program_name);
 void free_path(path **path_temp);
 bool is_empty(char *line);
-char *safe_cpy(char *dest, char *src);
+char *safe_cpy(char *dest, char *src, char *program_name);
 void free_many(int count, ...);
 bool is_path(char *cmd);
 #endif
