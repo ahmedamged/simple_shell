@@ -119,6 +119,7 @@ int handle_pipe(char *program_name, char **env)
 			}
 			else
 			{
+				status = 127;
 				perror(program_name);
 				free(path);
 				free_args(&command_args);

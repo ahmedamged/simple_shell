@@ -118,7 +118,8 @@ path *_getenv(char *var)
 	current = start;
 	while (*envs != NULL)
 	{
-		if (strncmp(var, *envs, var_len) == 0)
+		printf("%s\n", *envs + var_len);
+		if (strncmp(var, *envs, var_len) == 0 && (*envs + var_len)[0] == '=')
 		{
 			env = safe_malloc(sizeof(char) * (strlen(*envs) + 1));
 			env = strcpy(env, *envs);
