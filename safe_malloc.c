@@ -3,7 +3,6 @@
 /**
  * safe_malloc - malloc with protection
  * @size: size of space
- * @program_name: name of program for error
  *
  * safe malloc
  *
@@ -12,19 +11,26 @@
 void *safe_malloc(size_t size)
 {
 	void *temp = malloc(size);
+
 	if (temp == NULL)
 	{
 		perror(program_name);
 		exit(1);
 	}
-	return temp;
+	return (temp);
 }
 /**
- * free_path
+ * free_path - free path vars
+ * @path_temp: var to free
+ *
+ * frees path type vars
+ *
+ * Return: void
  */
 void free_path(path **path_temp)
 {
 	path *temp;
+
 	while (*path_temp != NULL)
 	{
 		free((*path_temp)->value);
@@ -54,18 +60,12 @@ void free_args(char **args[])
 		free(*args);
 	}
 }
-/**
- * is_empty
- */
-bool is_empty(char *line)
+void free_many(int count, ...)
 {
-	while (*line != '\0')
-	{
-		if (!isspace(*line))
-		{
-			return (false);
-		}
-		line++;
-	}
-	return (true);
+	int i;
+	va_list args;
+	va_start(args, count);
+
+	for (i = 0; i < count; i++)
+		free(va_arg(args, void *));
 }

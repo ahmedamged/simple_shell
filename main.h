@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include <signal.h>
 #include <stdint.h>
+#include <stdarg.h>
 #define EXEC_ERROR -1
 #define NOT_FOUND 404
 #define IS_PART_OF_PIPE 0
@@ -43,4 +44,6 @@ ssize_t _getline(char **lineptr, ssize_t *len, FILE *file);
 void *safe_malloc(size_t size);
 void free_path(path **path_temp);
 bool is_empty(char *line);
+char *safe_cpy(char *dest, char *src);
+void free_many(int count, ...);
 #endif

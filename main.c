@@ -93,8 +93,7 @@ int handle_pipe(char *program_name, char **env)
 	char **command_args = NULL, *path = NULL,
 		 *line = safe_malloc(sizeof(char) * MAX_LINE_LENGTH), *one_line,
 		 *temp, **save_ptr = safe_malloc(sizeof(char) * MAX_LINE_LENGTH);
-	int i, status = 0;
-	ssize_t len = MAX_LINE_LENGTH;
+	ssize_t i, status = 0, len = MAX_LINE_LENGTH;
 
 	i = _getline(&line, &len, stdin);
 	if (!is_empty(line))
@@ -108,17 +107,13 @@ int handle_pipe(char *program_name, char **env)
 		one_line = strtok_r(line, "\n", save_ptr);
 		while (one_line != NULL)
 		{
-			temp = safe_malloc(sizeof(char) * (strlen(one_line) + 1));
-			temp = strcpy(temp, one_line);
+			temp = safe_cpy(temp, one_line);
 			i = get_command_args(temp, &command_args, &path);
 			free(temp);
 			if (i != NOT_FOUND && i != EOF)
 			{
 				if (strcmp(command_args[0], "exit") == 0)
-				{
-					free(line);
-					free(save_ptr);
-				}
+					free_many(2, line, save_ptr);
 				status = execute_command(&path, &command_args, program_name, env);
 				if (status != EXIT_SUCCESS)
 					break;
@@ -133,8 +128,7 @@ int handle_pipe(char *program_name, char **env)
 			one_line = strtok_r(NULL, "\n", save_ptr);
 		}
 	}
-	free(save_ptr);
-	free(line);
+	free_many(2, save_ptr, line);
 	return (status);
 }
 /**
