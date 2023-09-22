@@ -126,7 +126,7 @@ int handle_pipe(char *program_name, char **env)
 			else
 			{
 				status = 127;
-				perror(program_name);
+				fprintf(stderr, "%s: 1: %s: not found\n", program_name, command_args[0]);
 				free(path);
 				free_args(&command_args);
 			}
@@ -173,7 +173,7 @@ int main(int argc, char *argv[], char **env)
 				}
 				else
 				{
-					perror(program_name);
+					fprintf(stderr, "%s: 1: %s: not found\n", program_name, command_args[0]);
 					free_args(&command_args);
 				}
 			}
