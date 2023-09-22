@@ -46,4 +46,5 @@ void free_path(path **path_temp);
 bool is_empty(char *line);
 char *safe_cpy(char *dest, char *src);
 void free_many(int count, ...);
+bool is_path(char *cmd);
 #endif

@@ -34,3 +34,19 @@ char *safe_cpy(char *dest, char *src)
 	dest = strcpy(dest, src);
 	return (dest);
 }
+/**
+ * is_path - check path
+ * @cmd: command
+ *
+ * checks if command is
+ * a "path"ed one
+ *
+ * Return: bool
+ */
+bool is_path(char *cmd)
+{
+	bool is_path = cmd[0] == '/' || strncmp(cmd, "./", 2)
+	|| strncmp(cmd, "../", 3);
+
+	return (is_path);
+}
